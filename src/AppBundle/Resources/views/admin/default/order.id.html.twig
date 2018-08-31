@@ -1,0 +1,80 @@
+{% extends '@App/admin.layout.html.twig' %}
+
+{% block categories %}
+    {% for cat in categories %}
+        <a href="{{ path('admin_category_item', {id:cat.id}) }}" class="hover_nav">{{ cat.name }}</a>
+    {% endfor %}
+{% endblock %}
+
+{% block categories_mobile %}
+    {% for cat in categories %}
+        <li><a href="{{ path('admin_category_item', {id:cat.id}) }}" style="padding: 12px 20px 12px 60px; line-height: normal; height: auto;">- {{ cat.name }}</a></li>
+    {% endfor %}
+{% endblock %}
+
+{% block body %}
+    <br><br><br>
+    <div class="mst_popular">
+        <h5>Номер заказа №{{ orderid }}</h5>
+    </div>
+
+    <br>
+
+    <div class="delivery">
+        <div class="addProduct">
+            <div style="text-align: center; color: #09b;">
+                <h3>Спасибо за ваш заказ !</h3><br><br>
+                <h5 style="color: dimgrey">Наши операторы в ближайшее время свяжиться с вами для уточнения информации о заказе.</h5><br>
+                <h5 style="color: dimgrey">Просмотрите ещё наши работы и заказывайте ещё.</h5>
+            </div>
+        </div>
+    </div>
+
+    <br><br>
+{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .registration {
+            width: 363px;
+            margin: 0 auto;
+        }
+
+        @media only screen and (max-width : 400px) {
+            .registration {
+                width: 100%;
+                padding: 10px;
+            }
+
+            input[type=text]:not(.browser-default) {
+                width: 100% !important;
+            }
+
+            input[type=password]:not(.browser-default) {
+                width: 100% !important;
+            }
+        }
+
+        @media only screen and (min-width : 993px) {
+
+
+            footer {
+                position: fixed;
+                left: 0px;
+                bottom: 0px;
+                height: 282px;
+                width: 100%;
+            }
+
+            /* IE 6 */
+            * html footer {
+                position: absolute;
+                top: expression((0-(footer.offsetHeight)+(document.documentElement.clientHeight ? document.documentElement.clientHeight : document.body.clientHeight)+(ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop))+'px');
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+
+{% endblock %}

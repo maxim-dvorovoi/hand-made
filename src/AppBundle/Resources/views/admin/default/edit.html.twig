@@ -1,0 +1,59 @@
+{% extends '@App/admin.layout.html.twig' %}
+
+{% block categories %}
+    {% for cat in categories %}
+        <a href="{{ path('admin_category_item', {id:cat.id}) }}" class="hover_nav">{{ cat.name }}</a>
+    {% endfor %}
+{% endblock %}
+
+{% block categories_mobile %}
+    {% for cat in categories %}
+        <li><a href="{{ path('admin_category_item', {id:cat.id}) }}" style="padding: 12px 20px 12px 60px; line-height: normal; height: auto;">- {{ cat.name }}</a></li>
+    {% endfor %}
+{% endblock %}
+
+{% block body %}
+    <br><br><br>
+    <div class="mst_popular">
+        <h5>Изменить продукт</h5>
+    </div>
+
+    <br>
+
+    <div class="delivery">
+        <div class="addProduct">
+            <form method="post">
+                <input type="text" value="{{ product.title }}" class="newCategory" name="title"><br>
+                <p>Категория</p>
+                <select name="category" style="display: block">
+                    {% for category in categories  %}
+                        {% if product.category.id == category.id %}
+                            <option selected value="{{ category.id }}">{{ category.name }}</option>
+                        {% else %}
+                            <option value="{{ category.id }}">{{ category.name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select><br>
+                <textarea rows="10" cols="45" placeholder="{{ product.description }}" name="description"></textarea><br>
+                <input type="text" value="{{ product.image }}" class="newCategory" name="image"><br>
+                <input type="number" value="{{ product.actualprice }}" class="newCategory" min="0" name="price"><br>
+                <select name="active" style="display: block">
+                    {% if product.active == 1 %}
+                        <option selected value="1">Активно</option>
+                        <option value="0">Удалить</option>
+                    {% else %}
+                        <option selected value="0">Удалено</option>
+                        <option value="1">Активировать</option>
+                    {% endif %}
+                </select><br>
+                <button type="submit" >Изменить</button>
+            </form>
+        </div>
+    </div>
+
+    <br><br>
+{% endblock %}
+
+{% block javascripts %}
+
+{% endblock %}

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0099BB">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#0099BB">
+    <title>{% block title %}{% endblock %}</title>
+    {% block stylesheets %}{% endblock %}
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="{{ asset('bundles/app/css/materialize.css') }}" type="text/css" rel="stylesheet"/>
+    <link href="{{ asset('bundles/app/css/style.css') }}" type="text/css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/app/css/transition.css') }}">
+
+</head>
+
+
+<body>
+
+<nav class="white" role="navigation">
+    <div class="nav-wrapper container">
+        <a id="logo-container" href="{{ path('admin_homepage') }}" class="brand-logo">HAND<hr>MADE</a>
+        <ul class="right hide-on-med-and-down">
+            <li><a href="{{ path('admin_homepage') }}" class="hover_nav">Главная</a></li>
+            <li>
+                <div class="dropdown">
+                    <p>Каталог 🢓 </p>
+                    <div class="dropdown-cont">
+                        {% block categories %}{% endblock %}
+                        <a href="{{ path('admin_category_all_new_item') }}" class="hover_nav">Все товары</a>
+                    </div>
+                </div>
+            </li>
+            <li><a href="{{ path('admin_photo') }}" class="hover_nav">Фотогалерея</a></li>
+            <li><a href="{{ path('admin_delivery') }}" class="hover_nav">Оплата и доставка</a></li>
+            <li><a href="{{ path('admin_contact') }}" class="hover_nav">Контакты</a></li>
+            <li>
+                <div class="dropdown">
+                    <p>Админка 🢓 </p>
+                    <div class="dropdown-cont" style="width: max-content;">
+                        <a href="{{ path('admin_product_add') }}" class="hover_nav">Создать товар</a>
+                        <a href="{{ path('admin_category_edit') }}" class="hover_nav">Создать, изменить категорию</a>
+                    </div>
+                </div>
+            </li>
+            <li><a href="{{ path('logout') }}" class="hover_nav">Выход</a></li>
+        </ul>
+
+        <ul id="nav-mobile" class="sidenav" style="transform: translateX(-105%);">
+            <li>
+                <img src="{{ asset('bundles/app/img/home.png') }}" style="padding-top: 10px; padding-left: 14px; float: left;">
+                <a href="{{ path('admin_homepage') }}"> Главная</a>
+            </li>
+            <li>
+                <img src="{{ asset('bundles/app/img/menu.png') }}" style="padding-top: 10px; padding-left: 14px; float: left;">
+                <a href="{{ path('admin_category_all_new_item') }}">Все товары</a>
+            </li>
+            {% block categories_mobile %}{% endblock %}
+            <li>
+                <img src="{{ asset('bundles/app/img/gallery.png') }}" style="padding-top: 10px; padding-left: 14px; float: left;">
+                <a href="{{ path('admin_photo') }}">Фотогалерея</a>
+            </li>
+            <li>
+                <img src="{{ asset('bundles/app/img/ship.png') }}" style="padding-top: 10px; padding-left: 14px; float: left;">
+                <a href="{{ path('admin_delivery') }}">Оплата и доставка</a>
+            </li>
+            <li>
+                <img src="{{ asset('bundles/app/img/contact.png') }}" style="padding-top: 10px; padding-left: 14px; float: left;">
+                <a href="{{ path('admin_contact') }}">Контакты</a>
+            </li>
+            <li>
+                <a href="{{ path('admin_product_add') }}" style="padding: 12px 20px 12px 60px; line-height: normal; height: auto;">- Создать товар</a>
+            </li>
+            <li>
+                <a href="{{ path('admin_category_edit') }}" style="padding: 12px 20px 12px 60px; line-height: normal; height: auto;">- Создать, изменить категорию</a>
+            </li>
+            <li>
+                <img src="{{ asset('bundles/app/img/sign_out.png') }}" style="padding-top: 10px; padding-left: 14px; float: left;">
+                <a href="{{ path('logout') }}">Выход</a>
+            </li>
+        </ul>
+        <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+    </div>
+</nav>
+
+
+{% block body %}{% endblock %}
+
+
+<footer class="page-footer teal">
+    <div class="container">
+        <div class="row">
+            <div class="col l6 s12">
+                <h5 class="white-text"><a href="{{ path('admin_homepage') }}">HAND<hr>MADE</a></h5>
+                <p class="grey-text text-lighten-4">Сайт - handmade.com.ua<br> Телефон +380950630179<br> Почта - handmade@gmail.com</p>
+
+
+            </div>
+            <div class="col l3 s12">
+                <h5 class="white-text">Дополнительно</h5>
+                <ul>
+                    <li><a class="white-text" href="{{ path('admin_photo') }}">Фотогалерея</a></li>
+                    <li><a class="white-text" href="{{ path('admin_delivery') }}">Оплата и доставка</a></li>
+                    <li><a class="white-text" href="{{ path('admin_contact') }}">Контакты</a></li>
+                </ul>
+            </div>
+            <div class="col l3 s12">
+                <h5 class="white-text">Мы в соцсетях</h5>
+                <ul>
+                    <li><a class="white-text" href="#"><i class="fa fa-twitter"></i>&nbsp;&nbsp;&nbsp;twitter</a></li>
+                    <li><a class="white-text" href="#"><i class="fa fa-facebook"></i>&nbsp;&nbsp;&nbsp;&nbsp;facebook</a></li>
+                    <li><a class="white-text" href="#"><i class="fa fa-google-plus"></i>&nbsp;&nbsp;google+</a></li>
+                    <li><a class="white-text" href="#"><i class="fa fa-pinterest"></i>&nbsp;&nbsp;&nbsp;pinterest</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="footer-copyright">
+        <div class="container">
+            Made by <a class="brown-text text-lighten-3" href="mailto:vmolo4nik@gmail.com?subject=Work">Maxim Dvorovoi</a>
+        </div>
+    </div>
+</footer>
+
+<script>
+    function myFunction() {
+        var x = document.getElementById("myTopnav");
+        if (x.className === "topnav") {
+            x.className += " responsive";
+        } else {
+            x.className = "topnav";
+        }
+    }
+</script>
+<script src="{{ asset('bundles/app/js/jquery-2.1.1.js') }}"></script>
+<script src="{{ asset('bundles/app/js/materialize.js') }}"></script>
+<script src="{{ asset('bundles/app/js/init.js') }}"></script>
+{% block javascripts %}{% endblock %}
+</body>
+</html>

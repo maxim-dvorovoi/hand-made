@@ -1,0 +1,58 @@
+security:
+    encoders:
+        in_memory:
+            class: Symfony\Component\Security\Core\User\User
+            algorithm: bcrypt
+        user_provider:
+            class: AppBundle\Entity\User
+            algorithm: bcrypt
+
+    providers:
+        in_memory:
+            memory:
+                users:
+                    admin:
+                        password: $2y$13$lnxofxSa.jv9erc44YZMAucLUc0JGaYg4TUQEptD3v6k/aFQs9E0K
+                        roles: 'ROLE_ADMIN'
+        user_provider:
+            entity:
+                class: AppBundle:User
+                property: username
+
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        admin:
+            pattern: ^/admin
+            provider: in_memory
+            anonymous: ~
+            form_login:
+                check_path: adminslogin
+                login_path: adminslogin
+                default_target_path: admin_homepage
+            logout:
+                path:   /logout
+                target: /
+        user:
+            provider: user_provider
+            anonymous: ~
+            form_login:
+                check_path: login
+                login_path: login
+                default_target_path: login_homepage
+            logout:
+                path:   /logout
+                target: /
+
+    access_control:
+        admin_login:
+            path: ^/admin/login
+            roles: IS_AUTHENTICATED_ANONYMOUSLY
+        admin_area:
+            path: ^/admin
+            roles: ROLE_ADMIN
+        user_area:
+            path: ^/user
+            roles: ROLE_USER

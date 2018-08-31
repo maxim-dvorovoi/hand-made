@@ -1,0 +1,89 @@
+{% extends '@App/admin.layout.html.twig' %}
+
+{% block categories %}
+    {% for cat in categories %}
+        <a href="{{ path('admin_category_item', {id:cat.id}) }}" class="hover_nav">{{ cat.name }}</a>
+    {% endfor %}
+{% endblock %}
+
+{% block categories_mobile %}
+    {% for cat in categories %}
+        <li><a href="{{ path('admin_category_item', {id:cat.id}) }}" style="padding: 12px 20px 12px 60px; line-height: normal; height: auto;">- {{ cat.name }}</a></li>
+    {% endfor %}
+{% endblock %}
+
+{% block body %}
+    <br><br><br>
+    <div class="mst_popular">
+        <h5>Создать категорию</h5>
+    </div>
+
+    <br>
+
+    <div class="delivery">
+        <form method="post">
+            <input type="text" placeholder="Название категории" class="newCategory" name="newCategory"><br>
+            <button type="submit">Создать</button>
+        </form>
+    </div>
+
+    <br><br><br><br>
+
+    <div class="mst_popular">
+        <h5>Изменить категорию</h5>
+    </div>
+
+    <div class="contact">
+        <div class="editCategory">
+            {% for category in categories  %}
+                <h6>{{ category.name }}</h6><button type="button" id="{{ category.id }}" onclick="change();">Изменить</button>
+                <form method="post">
+                    <input type="text" id="text{{ category.id }}" name="text" placeholder="{{ category.name }}" style="text-align: center; visibility: hidden; position: absolute;">
+                    <button type="submit" id="submit{{ category.id }}" name="change" value="{{ category.id }}" style="visibility: hidden; position: absolute; ">Отправить</button><br>
+                    <button type="button" id="close{{ category.id }}" onclick="closes();" name="close" value="{{ category.id }}" style="visibility: hidden; position: absolute;">Закрыть</button>
+                </form>
+                <br><br>
+            {% endfor %}
+        </div>
+    </div>
+
+
+    <br>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        function change() {
+            var id = event.target.getAttribute("id");
+            document.getElementById(id).style.visibility = "hidden";
+            document.getElementById(id).style.position = "absolute";
+
+            document.getElementById("text"+id).style.visibility = "visible";
+            document.getElementById("text"+id).style.position = "static";
+
+            document.getElementById("submit"+id).style.visibility = "visible";
+            document.getElementById("submit"+id).style.position = "static";
+
+            document.getElementById("close"+id).style.visibility = "visible";
+            document.getElementById("close"+id).style.position = "static";
+        }
+    </script>
+
+    <script>
+        function closes() {
+            var id = event.target.getAttribute("id").slice(5);
+            console.log(id);
+            document.getElementById(id).style.visibility = "visible";
+            document.getElementById(id).style.position = "static";
+
+            document.getElementById("text"+id).style.visibility = "hidden";
+            document.getElementById("text"+id).style.position = "absolute";
+
+            document.getElementById("submit"+id).style.visibility = "hidden";
+            document.getElementById("submit"+id).style.position = "absolute";
+
+            document.getElementById("close"+id).style.visibility = "hidden";
+            document.getElementById("close"+id).style.position = "absolute";
+        }
+    </script>
+{% endblock %}

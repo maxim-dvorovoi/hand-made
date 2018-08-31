@@ -1,0 +1,189 @@
+{% extends '@App/layout.html.twig' %}
+
+{% block categories %}
+    {% for cat in categories %}
+        <a href="{{ path('category_item', {id:cat.id}) }}" class="hover_nav">{{ cat.name }}</a>
+    {% endfor %}
+{% endblock %}
+
+{% block categories_mobile %}
+    {% for cat in categories %}
+        <li><a href="{{ path('category_item', {id:cat.id}) }}" style="padding: 12px 20px 12px 60px; line-height: normal; height: auto;">- {{ cat.name }}</a></li>
+    {% endfor %}
+{% endblock %}
+
+{% block body %}
+    <div id="index-banner" class="parallax-container">
+        <div class="section no-pad-bot main">
+            <div class="container">
+                <br><br>
+                <div class="paralax">
+                    <h4 class="header center teal-text text-lighten-2">Каталог товаров ручной работы</h4>
+                    <div class="row center">
+                        <h5 class="header col s12 light">Сделано руками лучших мастеров</h5>
+                    </div>
+                    <div class="row center">
+                        <a href="{{ path('category_all_new_item') }}" id="download-button" class="btn-large waves-effect waves-light teal lighten-1">Все товары</a>
+                    </div>
+                </div>
+                <br><br>
+
+            </div>
+        </div>
+        <div class="parallax"><img src="https://images.unsplash.com/photo-1481930703900-9007d48152b1?ixlib=rb-0.3.5&s=3f971572d828782017ef2a14d4dafb42&auto=format&fit=crop&w=1372&q=80" alt=""></div>
+    </div>
+
+    <div class="mst_popular">
+        <h5>Самые популярные изделия</h5>
+        <h6>Hand-made мастерская от Инны Сундуковой</h6>
+    </div>
+
+    <br>
+
+    <div class="products_list">
+        {% for product in products %}
+
+            {% if product.actualprice < product.price %}
+                <div class="products" style="position: relative">
+                    <a href="{{ path('product_item', {id:product.id}) }}">
+                        <div class="crop_image">
+                            <img src="{{ product.image }}" class="image" style="width: 300px">
+                        </div>
+                    </a>
+                    <div class="corner-sale">Скидка</div>
+                    <div class="title">
+                        {{ product.title }}
+                    </div>
+
+                    <div class="views">
+                        <div class="lastsale">{{ product.actualprice }} грн</div><div class="sale">{{ product.price }} грн</div>
+                        <a href="#0" class="cd-add-to-cart" data-price="{{ product.actualprice }}" data-title="{{ product.title }}" data-id="{{ product.id }}" data-img="{{ product.image }}">+<img src="{{ asset('bundles/app/img/basket.png') }}"></a>
+                    </div>
+                </div>
+
+            {% else %}
+                <div class="products">
+                    <a href="{{ path('product_item', {id:product.id}) }}">
+                        <div class="crop_image">
+                            <img src="{{ product.image }}" class="image" style="width: 300px">
+                        </div>
+                    </a>
+                    <div class="title">
+                        {{ product.title }}
+                    </div>
+
+                    <div class="views">
+                        <div>{{ product.actualprice }} грн</div>
+                        <a href="#0" class="cd-add-to-cart" data-price="{{ product.actualprice }}" data-title="{{ product.title }}" data-id="{{ product.id }}" data-img="{{ product.image }}">+<img src="{{ asset('bundles/app/img/basket.png') }}"></a>
+                    </div>
+                </div>
+            {% endif %}
+
+        {% endfor %}
+    </div>
+
+    {% if cookProduct == [] %}
+        <div class="cd-cart-container empty">
+            <a href="#0" class="cd-cart-trigger">
+                Корзина
+                <ul class="count"> <!-- cart items count -->
+                    <li>0</li>
+                    <li>0</li>
+                </ul> <!-- .count -->
+            </a>
+
+            <div class="cd-cart">
+                <div class="wrapper">
+                    <header>
+                        <h2>Выбранные</h2>
+                        <span class="undo">Удалено  <a href="#0">Отменить</a></span>
+                    </header>
+
+                    <div class="body">
+                        <ul>
+                            <!-- products added to the cart will be inserted here using JavaScript -->
+                        </ul>
+                    </div>
+
+                    <footer>
+                        <a href="{{ path('cart') }}" class="checkout btn"><em>В корзину</em></a>
+                    </footer>
+                </div>
+            </div> <!-- .cd-cart -->
+        </div>
+    {% else %}
+        <div class="cd-cart-container">
+            <a href="#0" class="cd-cart-trigger">
+                Корзина
+                <ul class="count"> <!-- cart items count -->
+                    <li>{{ count }}</li>
+                    <li>{{ count }}</li>
+                </ul> <!-- .count -->
+            </a>
+
+            <div class="cd-cart">
+                <div class="wrapper">
+                    <header>
+                        <h2>Выбранные</h2>
+                        <span class="undo">Удалено  <a href="#0">Отменить</a></span>
+                    </header>
+
+                    <div class="body">
+                        <ul>
+                            {% for product in cookProduct %}
+                                <li class="product">
+                                    <div class="product-image">
+                                        <a href="{{ path('product_item', { id:product.id }) }}">
+                                            <img src="{{ product.image }}" alt="placeholder">
+                                        </a>
+                                    </div>
+                                    <div class="product-details">
+                                        <h3>
+                                            <a href="{{ path('product_item', { id:product.id }) }}">{{ product.title }}</a>
+                                        </h3>
+
+                                        <span class="price">{{ product.actualprice }} грн</span>
+
+                                        <div class="actions">
+                                            <a href="#0" class="delete-item" id="{{ product.id }}">Удалить</a>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endfor %}
+
+                            <!-- products added to the cart will be inserted here using JavaScript -->
+                        </ul>
+                    </div>
+
+                    <footer>
+                        <a href="{{ path('cart') }}" class="checkout btn"><em>В корзину</em></a>
+                    </footer>
+                </div>
+            </div> <!-- .cd-cart -->
+        </div>
+    {% endif %}
+
+
+    <br>
+    <div class="row center">
+        <a href="{{ path('category_all_top_item') }}" id="download-button" class="btn-large waves-effect waves-light teal lighten-1" style="z-index: 0">Показать Все</a>
+    </div>
+    <br>
+{% endblock %}
+
+{% block stylesheets %}
+    <style>
+
+    </style>
+{% endblock %}
+
+
+{% block javascripts %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script>
+        if( !window.jQuery ) document.write('<script src="{{ asset('bundles/app/js/jquery-3.0.0.min.js') }}"><\/script>');
+    </script>
+    <script src="{{ asset('bundles/app/js/main.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/jquery.cookie.js') }}"></script>
+
+{% endblock %}

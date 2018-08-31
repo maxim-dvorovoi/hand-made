@@ -1,0 +1,168 @@
+{% extends '@App/admin.layout.html.twig' %}
+
+{% block categories %}
+    {% for cat in categories %}
+        <a href="{{ path('admin_category_item', {id:cat.id}) }}" class="hover_nav">{{ cat.name }}</a>
+    {% endfor %}
+{% endblock %}
+
+{% block categories_mobile %}
+    {% for cat in categories %}
+        <li><a href="{{ path('admin_category_item', {id:cat.id}) }}" style="padding: 12px 20px 12px 60px; line-height: normal; height: auto;">- {{ cat.name }}</a></li>
+    {% endfor %}
+{% endblock %}
+
+{% block body %}
+    <div id="index-banner" class="parallax-container">
+        <div class="section no-pad-bot">
+            <div class="container">
+                <br><br>
+                <div class="paralax">
+                    <h4 class="header center teal-text text-lighten-2">Контакты</h4>
+                    <div class="row center">
+                        <h5 class="header col s12 light">Информация о нас и контактные данные</h5>
+                    </div>
+                </div>
+                <br><br>
+            </div>
+        </div>
+        <div class="parallax"><img src="https://images.unsplash.com/photo-1487611459768-bd414656ea10?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=6492053f1a3187e3596132f5857917b4&auto=format&fit=crop&w=1350&q=80" alt=""></div>
+    </div>
+
+    <div class="mst_popular">
+        <h5>О нашей компании</h5>
+    </div>
+
+    <br>
+
+    <div class="delivery">
+        <h6>
+            &nbsp;&nbsp;&nbsp;&nbsp;<b>HANDMADE</b> – це молода та дружня команда, що динамічно розвивається. Ми переконані, що в нашій країні живе чимало небайдужих людей із потужним запасом креативу та ентузіазму, і віримо, що, об’єднавшись, зможемо створити ідеальний простір для розвитку творчої особистості.
+            <br><br><br>
+        </h6>
+    </div>
+
+    <div class="mst_popular">
+        <h5>Контактные данные</h5>
+    </div>
+
+    <div class="contact">
+        <h6>
+            <b>(066) 162-40-02 (МТС)</b><br><br>
+            <b>(093) 63-85-665 (Life:)</b><br><br>
+            <b>(096) 65-97-257 (Kyivstar)</b><br><br><br>
+            Задавайте свои вопросы на электронную почту - <a href="mailto:sundukovainna@mail.ru"> <b>sundukovainna@mail.ru</b></a><br><br>
+            с <b>10:00</b> до <b>20:00</b> в будние дни<br><br>
+        </h6>
+    </div>
+
+    <div class="flex" >
+
+    </div>
+
+    <div class="delivery">
+        <h6>
+
+        </h6>
+    </div>
+
+    {% if cookProduct == [] %}
+        <div class="cd-cart-container empty">
+            <a href="#0" class="cd-cart-trigger">
+                Корзина
+                <ul class="count"> <!-- cart items count -->
+                    <li>0</li>
+                    <li>0</li>
+                </ul> <!-- .count -->
+            </a>
+
+            <div class="cd-cart">
+                <div class="wrapper">
+                    <header>
+                        <h2>Выбранные</h2>
+                        <span class="undo">Удалено  <a href="#0">Отменить</a></span>
+                    </header>
+
+                    <div class="body">
+                        <ul>
+                            <!-- products added to the cart will be inserted here using JavaScript -->
+                        </ul>
+                    </div>
+
+                    <footer>
+                        <a href="{{ path('admin_cart') }}" class="checkout btn"><em>В корзину</em></a>
+                    </footer>
+                </div>
+            </div> <!-- .cd-cart -->
+        </div>
+    {% else %}
+        <div class="cd-cart-container">
+            <a href="#0" class="cd-cart-trigger">
+                Корзина
+                <ul class="count"> <!-- cart items count -->
+                    <li>{{ count }}</li>
+                    <li>{{ count }}</li>
+                </ul> <!-- .count -->
+            </a>
+
+            <div class="cd-cart">
+                <div class="wrapper">
+                    <header>
+                        <h2>Выбранные</h2>
+                        <span class="undo">Удалено  <a href="#0">Отменить</a></span>
+                    </header>
+
+                    <div class="body">
+                        <ul>
+                            {% for product in cookProduct %}
+                                <li class="product">
+                                    <div class="product-image">
+                                        <a href="{{ path('admin_product_item', { id:product.id }) }}">
+                                            <img src="{{ product.image }}" alt="placeholder">
+                                        </a>
+                                    </div>
+                                    <div class="product-details">
+                                        <h3>
+                                            <a href="{{ path('admin_product_item', { id:product.id }) }}">{{ product.title }}</a>
+                                        </h3>
+
+                                        <span class="price">{{ product.actualprice }} грн</span>
+
+                                        <div class="actions">
+                                            <a href="#0" class="delete-item" id="{{ product.id }}">Удалить</a>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endfor %}
+
+                            <!-- products added to the cart will be inserted here using JavaScript -->
+                        </ul>
+                    </div>
+
+                    <footer>
+                        <a href="{{ path('admin_cart') }}" class="checkout btn"><em>В корзину</em></a>
+                    </footer>
+                </div>
+            </div> <!-- .cd-cart -->
+        </div>
+    {% endif %}
+
+
+    <br>
+{% endblock %}
+
+{% block stylesheets %}
+<style>
+
+</style>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script>
+        if( !window.jQuery ) document.write('<script src="{{ asset('bundles/app/js/jquery-3.0.0.min.js') }}"><\/script>');
+    </script>
+    <script src="{{ asset('bundles/app/js/adminmain.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/jquery.cookie.js') }}"></script>
+
+{% endblock %}

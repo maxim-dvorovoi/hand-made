@@ -1,0 +1,189 @@
+{% extends '@App/login.layout.html.twig' %}
+
+{% block categories %}
+    {% for cat in categories %}
+        <a href="{{ path('login_category_item', {id:cat.id}) }}" class="hover_nav">{{ cat.name }}</a>
+    {% endfor %}
+{% endblock %}
+
+{% block categories_mobile %}
+    {% for cat in categories %}
+        <li><a href="{{ path('login_category_item', {id:cat.id}) }}" style="padding: 12px 20px 12px 60px; line-height: normal; height: auto;">- {{ cat.name }}</a></li>
+    {% endfor %}
+{% endblock %}
+
+{% block body %}
+    <div id="index-banner" class="parallax-container">
+        <div class="section no-pad-bot">
+            <div class="container">
+                <br><br>
+                <div class="paralax">
+                    <h4 class="header center teal-text text-lighten-2">Оплата и доставка</h4>
+                    <div class="row center">
+                        <h5 class="header col s12 light">Условия оплаты и доставки товара</h5>
+                    </div>
+                </div>
+                <br><br>
+            </div>
+        </div>
+        <div class="parallax"><img src="https://images.unsplash.com/photo-1449247666642-264389f5f5b1?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=9b356ab939c00d2d4f3fb8ee27df53ba&auto=format&fit=crop&w=1349&q=80" alt=""></div>
+    </div>
+
+    <div class="mst_popular">
+        <h5>Возможные способы оплаты</h5>
+    </div>
+
+    <br>
+
+    <div class="delivery">
+        <h6>
+            ➤ &nbsp;Расчет наличными.<br>
+            Расчет наличными при встрече с курьером в г. Киев. (см. ниже)<br><br>
+            ➤ &nbsp;Предоплата на карту Приватбанка.<br>
+            Внести деньги на карту Приватбанка можно через системы интернет-банкинга (в т.ч. Приват24), терминал или кассу любого банка.<br>
+            <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;Обратите внимание, банк берет комиссию за свои услуги. Сумма перевода должна ровняться сумме заказа. Комиссия оплачивается покупателем дополнительно. Размер комиссии Вы сможете узнать непосредственно в момент осуществления платежа. Важно! Заказ поступает в обработку только после поступления оплаты в полном объёме.<br>
+            <br>
+            ➤ &nbsp;Наложенный платеж.<br>
+            Выбрав наложенный платеж в качестве способа расчета Вы можете осмотреть и проверить товар в отделении службы доставки перед оплатой. Порядок совершения покупки следующий:<br><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;1. После составления заказа вам нужно осуществить предоплату в размере 50 грн на карту Приватбанка.<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;2. Мы вычитаем из стоимости заказа предоплату и отправляем посылку.<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;3. Заказчик после осмотра товара оплачивает заказ и платит за пересылку денег. В случае отказа заказчика от товара предоплата не возвращается.<br><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;Все необходимые реквизиты для оплаты будут высланы вам на email вместе с информацией о заказе.<br>
+            <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;После совершения оплаты или предоплаты свяжитесь с нами для идентификации и подтверждения платежа.<br>
+            <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;Товар резервируется на срок 3 дня от даты заказа. Если в течение этого срока оплата не поступает - заказ удаляется. Данное условие может быть изменено в отдельных случаях по договорённости сторон.<br>
+            <br><br><br>
+        </h6>
+    </div>
+
+    <div class="mst_popular">
+        <h5>Возможные способы доставки</h5>
+    </div>
+
+    <div class="delivery">
+        <h6>
+
+            ➤ &nbsp;При личной встрече. ( только для жителей г. Киев )<br>
+            Время и место встречи согласовываются отдельно в каждом случае.<br>
+            <br>
+            ➤ &nbsp;Доставка по Украине транспортными компаниями( Нова Пошта, Укрпошта, інТайм ,Delivery Auto ).<br>
+            Доставка осуществляется за счет получателя. С условиями и тарифами можно ознакомиться на официальных сайтах перевозчиков.<br><br>
+        </h6>
+    </div>
+
+    <div class="flex" >
+        <img src="https://my.novaposhta.international/img/logo.png">
+        <img src="https://ukrposhta.ua/wp-content/themes/twentyeleven/images/Upost_logo-ua.svg">
+        <img src="https://intime.ua/images/logo.svg">
+        <img src="https://broportal.net.ua/images/organization/delivery-auto.com-logo.png">
+    </div>
+
+    <div class="delivery">
+        <h6>
+            <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;Отправка заказов осуществляется на протяжении 1-2 рабочих дней после поступления оплаты (предоплаты). Весь отправленный товар страхуется на сумму накладной. Отметим, что «Завиток» не несёт ответственности за работу служб доставки, поэтому настоятельно рекомендуем осмотреть товар при получении и, в случае повреждения составить акт-претензию.
+        </h6>
+    </div>
+
+    {% if cookProduct == [] %}
+        <div class="cd-cart-container empty">
+            <a href="#0" class="cd-cart-trigger">
+                Корзина
+                <ul class="count"> <!-- cart items count -->
+                    <li>0</li>
+                    <li>0</li>
+                </ul> <!-- .count -->
+            </a>
+
+            <div class="cd-cart">
+                <div class="wrapper">
+                    <header>
+                        <h2>Выбранные</h2>
+                        <span class="undo">Удалено  <a href="#0">Отменить</a></span>
+                    </header>
+
+                    <div class="body">
+                        <ul>
+                            <!-- products added to the cart will be inserted here using JavaScript -->
+                        </ul>
+                    </div>
+
+                    <footer>
+                        <a href="{{ path('login_cart') }}" class="checkout btn"><em>В корзину</em></a>
+                    </footer>
+                </div>
+            </div> <!-- .cd-cart -->
+        </div>
+    {% else %}
+        <div class="cd-cart-container">
+            <a href="#0" class="cd-cart-trigger">
+                Корзина
+                <ul class="count"> <!-- cart items count -->
+                    <li>{{ count }}</li>
+                    <li>{{ count }}</li>
+                </ul> <!-- .count -->
+            </a>
+
+            <div class="cd-cart">
+                <div class="wrapper">
+                    <header>
+                        <h2>Выбранные</h2>
+                        <span class="undo">Удалено  <a href="#0">Отменить</a></span>
+                    </header>
+
+                    <div class="body">
+                        <ul>
+                            {% for product in cookProduct %}
+                                <li class="product">
+                                    <div class="product-image">
+                                        <a href="{{ path('login_product_item', { id:product.id }) }}">
+                                            <img src="{{ product.image }}" alt="placeholder">
+                                        </a>
+                                    </div>
+                                    <div class="product-details">
+                                        <h3>
+                                            <a href="{{ path('login_product_item', { id:product.id }) }}">{{ product.title }}</a>
+                                        </h3>
+
+                                        <span class="price">{{ product.actualprice }} грн</span>
+
+                                        <div class="actions">
+                                            <a href="#0" class="delete-item" id="{{ product.id }}">Удалить</a>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endfor %}
+
+                            <!-- products added to the cart will be inserted here using JavaScript -->
+                        </ul>
+                    </div>
+
+                    <footer>
+                        <a href="{{ path('login_cart') }}" class="checkout btn"><em>В корзину</em></a>
+                    </footer>
+                </div>
+            </div> <!-- .cd-cart -->
+        </div>
+    {% endif %}
+
+
+    <br>
+{% endblock %}
+
+{% block stylesheets %}
+    <style>
+
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script>
+        if( !window.jQuery ) document.write('<script src="{{ asset('bundles/app/js/jquery-3.0.0.min.js') }}"><\/script>');
+    </script>
+    <script src="{{ asset('bundles/app/js/loginmain.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/jquery.cookie.js') }}"></script>
+
+{% endblock %}

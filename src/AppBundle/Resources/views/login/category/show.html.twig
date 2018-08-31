@@ -1,0 +1,175 @@
+{% extends '@App/login.layout.html.twig' %}
+
+{% block categories %}
+    {% for cat in categories %}
+        <a href="{{ path('login_category_item', {id:cat.id}) }}" class="hover_nav">{{ cat.name }}</a>
+    {% endfor %}
+{% endblock %}
+
+{% block categories_mobile %}
+    {% for cat in categories %}
+        <li><a href="{{ path('login_category_item', {id:cat.id}) }}" style="padding: 12px 20px 12px 60px; line-height: normal; height: auto;">- {{ cat.name }}</a></li>
+    {% endfor %}
+{% endblock %}
+
+{% block body %}
+    <div class="category">
+        <div class="count">
+            <h6>{{ category.name }}/ новинки</h6>
+            количество : {{ pagination.getTotalItemCount }}
+        </div>
+
+        <div class="tag">
+            <a href="#" id="download-button" class="btn-large waves-effect waves-light teal lighten-1" style="background-color: #b3b3b3 !important;  box-shadow: none !important; cursor: context-menu;">Новинки</a>
+            <a href="{{ path('login_category_top_item', {id:category.id}) }}" id="download-button" class="btn-large waves-effect waves-light teal lighten-1">Популярные</a>
+        </div>
+    </div>
+
+    <table>
+
+        <div class="products_list">
+            {% for product in pagination %}
+                {% if product.actualprice < product.price %}
+                    <div class="products" style="position: relative">
+                        <a href="{{ path('login_product_item', {id:product.id}) }}">
+                            <div class="crop_image">
+                                <img src="{{ product.image }}" class="image" style="width: 300px">
+                            </div>
+                        </a>
+                        <div class="corner-sale">Скидка</div>
+                        <div class="title">
+                            {{ product.title }}
+                        </div>
+
+                        <div class="views">
+                            <div class="lastsale">{{ product.actualprice }} грн</div><div class="sale">{{ product.price }} грн</div>
+                            <a href="#0" class="cd-add-to-cart" data-price="{{ product.actualprice }}" data-title="{{ product.title }}" data-id="{{ product.id }}" data-img="{{ product.image }}">+<img src="{{ asset('bundles/app/img/basket.png') }}"></a>
+                        </div>
+                    </div>
+
+                {% else %}
+                    <div class="products">
+                        <a href="{{ path('login_product_item', {id:product.id}) }}">
+                            <div class="crop_image">
+                                <img src="{{ product.image }}" class="image" style="width: 300px">
+                            </div>
+                        </a>
+                        <div class="title">
+                            {{ product.title }}
+                        </div>
+
+                        <div class="views">
+                            <div>{{ product.actualprice }} грн</div>
+                            <a href="#0" class="cd-add-to-cart" data-price="{{ product.actualprice }}" data-title="{{ product.title }}" data-id="{{ product.id }}" data-img="{{ product.image }}">+<img src="{{ asset('bundles/app/img/basket.png') }}"></a>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+    </table>
+
+    <div class="navigation">
+        {{ knp_pagination_render(pagination) }}
+    </div>
+
+    {% if cookProduct == [] %}
+        <div class="cd-cart-container empty">
+            <a href="#0" class="cd-cart-trigger">
+                Корзина
+                <ul class="count"> <!-- cart items count -->
+                    <li>0</li>
+                    <li>0</li>
+                </ul> <!-- .count -->
+            </a>
+
+            <div class="cd-cart">
+                <div class="wrapper">
+                    <header>
+                        <h2>Выбранные</h2>
+                        <span class="undo">Удалено  <a href="#0">Отменить</a></span>
+                    </header>
+
+                    <div class="body">
+                        <ul>
+                            <!-- products added to the cart will be inserted here using JavaScript -->
+                        </ul>
+                    </div>
+
+                    <footer>
+                        <a href="{{ path('login_cart') }}" class="checkout btn"><em>В корзину</em></a>
+                    </footer>
+                </div>
+            </div> <!-- .cd-cart -->
+        </div>
+    {% else %}
+        <div class="cd-cart-container">
+            <a href="#0" class="cd-cart-trigger">
+                Корзина
+                <ul class="count"> <!-- cart items count -->
+                    <li>{{ count }}</li>
+                    <li>{{ count }}</li>
+                </ul> <!-- .count -->
+            </a>
+
+            <div class="cd-cart">
+                <div class="wrapper">
+                    <header>
+                        <h2>Выбранные</h2>
+                        <span class="undo">Удалено  <a href="#0">Отменить</a></span>
+                    </header>
+
+                    <div class="body">
+                        <ul>
+                            {% for product in cookProduct %}
+                                <li class="product">
+                                    <div class="product-image">
+                                        <a href="{{ path('login_product_item', { id:product.id }) }}">
+                                            <img src="{{ product.image }}" alt="placeholder">
+                                        </a>
+                                    </div>
+                                    <div class="product-details">
+                                        <h3>
+                                            <a href="{{ path('login_product_item', { id:product.id }) }}">{{ product.title }}</a>
+                                        </h3>
+
+                                        <span class="price">{{ product.actualprice }} грн</span>
+
+                                        <div class="actions">
+                                            <a href="#0" class="delete-item" id="{{ product.id }}">Удалить</a>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endfor %}
+
+                            <!-- products added to the cart will be inserted here using JavaScript -->
+                        </ul>
+                    </div>
+
+                    <footer>
+                        <a href="{{ path('login_cart') }}" class="checkout btn"><em>В корзину</em></a>
+                    </footer>
+                </div>
+            </div> <!-- .cd-cart -->
+        </div>
+    {% endif %}
+
+{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .dropdown > p {
+            color: #09b !important;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script>
+        if( !window.jQuery ) document.write('<script src="{{ asset('bundles/app/js/jquery-3.0.0.min.js') }}"><\/script>');
+    </script>
+    <script src="{{ asset('bundles/app/js/loginmain.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/jquery.cookie.js') }}"></script>
+
+{% endblock %}

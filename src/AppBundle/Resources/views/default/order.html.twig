@@ -1,0 +1,72 @@
+{% extends '@App/layout.html.twig' %}
+
+{% block categories %}
+    {% for cat in categories %}
+        <a href="{{ path('category_item', {id:cat.id}) }}" class="hover_nav">{{ cat.name }}</a>
+    {% endfor %}
+{% endblock %}
+
+{% block categories_mobile %}
+    {% for cat in categories %}
+        <li><a href="{{ path('category_item', {id:cat.id}) }}" style="padding: 12px 20px 12px 60px; line-height: normal; height: auto;">- {{ cat.name }}</a></li>
+    {% endfor %}
+{% endblock %}
+
+{% block body %}
+    <br><br><br>
+    <div class="mst_popular">
+        <h5>Оформление заказа</h5>
+    </div>
+
+    <br>
+
+    <div class="delivery">
+        <div class="addProduct">
+            <form method="post">
+                <div style="position: relative; max-width: 570px;margin: 0 auto;">
+                    <input type="text" placeholder="Имя" class="newCategory" name="firstname">
+                    <h4 style="position: absolute; width: fit-content; top: -15px; right: 0; color: #ea0000;">*</h4>
+                </div><br>
+                <div style="position: relative; max-width: 570px;margin: 0 auto;">
+                    <input type="text" placeholder="Фамилия" class="newCategory" name="lastname">
+                    <h4 style="position: absolute; width: fit-content; top: -15px; right: 0; color: #ea0000;">*</h4>
+                </div><br>
+                <input type="text" placeholder="Email" class="newCategory" name="email"><br>
+                <div style="position: relative; max-width: 570px;margin: 0 auto;">
+                    <input type="text" class="phone newCategory" placeholder="Номер телефона" name="phone">
+                    <h4 style="position: absolute; width: fit-content; top: -15px; right: 0; color: #ea0000;">*</h4>
+                </div><br>
+                <p>Способ оплаты</p>
+                <select name="payment" style="display: block">
+                    <option value="1">Расчет наличными</option>
+                    <option value="2">Предоплата на карту Приватбанка</option>
+                    <option value="3">Наложенный платеж</option>
+                </select><br>
+                <p>Способ доставки</p>
+                <select name="delivery" style="display: block">
+                    <option value="1">При личной встрече. ( только для жителей г. Киев )</option>
+                    <option value="2">Доставка "Новая Почта"</option>
+                    <option value="3">Доставка "УкрПочта"</option>
+                    <option value="4">Доставка "Интайм"</option>
+                    <option value="5">Доставка "Деливери Ауто"</option>
+                </select><br>
+                <textarea rows="10" cols="45" placeholder="Ваше пожелание ..." name="suggestion"></textarea><br>
+
+                <button type="submit" >Заказать</button>
+            </form>
+        </div>
+    </div>
+
+    <br><br>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://code.jquery.com/jquery-2.2.4.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".phone").mask("+38(999)999-9999");
+        });
+    </script>
+
+{% endblock %}

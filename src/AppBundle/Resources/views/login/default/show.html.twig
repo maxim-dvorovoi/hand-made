@@ -1,0 +1,317 @@
+{% extends '@App/login.layout.html.twig' %}
+
+{% block categories %}
+    {% for cat in categories %}
+        <a href="{{ path('login_category_item', {id:cat.id}) }}" class="hover_nav">{{ cat.name }}</a>
+    {% endfor %}
+{% endblock %}
+
+{% block categories_mobile %}
+    {% for cat in categories %}
+        <li><a href="{{ path('login_category_item', {id:cat.id}) }}" style="padding: 12px 20px 12px 60px; line-height: normal; height: auto;">- {{ cat.name }}</a></li>
+    {% endfor %}
+{% endblock %}
+
+{% block stylesheets %}
+
+{% endblock %}
+
+{% block body %}
+    <br><br>
+    <div class="product_id">
+        {% if product.actualprice < product.price %}
+            <div class="cen">
+                <div class="corner-sale">Скидка</div>
+                <div class="crop" id='ex1'>
+                    <img src="{{ product.image }}">
+                </div>
+            </div>
+
+            <div class="product_text">
+                <h5>{{ product.title }}</h5>
+
+                <h6><a href="{{ path('login_category_item', {id:product.category.id}) }}">категория: {{ product.category.name }}</a></h6>
+                <hr>
+
+                <div class="price">
+                    <div class="sale_show_price"><div style="float: left">{{ product.actualprice }} грн</div><div class="sale" style="float: left">{{ product.price }} грн</div></div>
+                </div>
+
+                <div class="row center">
+                    <a href="#0" data-price="{{ product.actualprice }}" data-title="{{ product.title }}" data-id="{{ product.id }}" data-img="{{ product.image }}" class="btn-large waves-effect waves-light teal lighten-1 cd-add-to-cart" style="color: white !important;">Купить</a>
+                    {% if product.active == 1 %}
+                        <h6 class="available">есть в наличии</h6>
+                    {% else %}
+                        <h6 class="available">нет в наличии</h6>
+                    {% endif %}
+                </div>
+                <b>Описание:</b> {{ product.description }}
+                <br><br>
+
+                <h6 class="show">Поделится в соцсетях:</h6>
+
+                <div id="social-platforms">
+                    <a href="https://twitter.com/home?status=http%3A//127.0.0.1%3A8000/admin/product/1"
+                       onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false;"
+                       target="_blank" title="Share on Twitter" class="icon-button twitter"><i class="fa fa-twitter"></i><span></span></a>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A//127.0.0.1%3A8000/admin/product/1"
+                       onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false;"
+                       target="_blank" title="Share on Facebook" class="icon-button facebook"><i class="fa fa-facebook"></i><span></span></a>
+                    <a href="https://plus.google.com/share?url=http%3A//127.0.0.1%3A8000/admin/product/1"
+                       onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false;"
+                       target="_blank" class="icon-button google-plus"><i class="fa fa-google-plus"></i><span></span></a>
+                    <a href="https://plus.google.com/share?url=http%3A//127.0.0.1%3A8000/admin/product/1"
+                       onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false;"
+                       target="_blank" class="icon-button pinterest"><i class="fa fa-pinterest"></i><span></span></a>
+                </div>
+            </div>
+        {% else %}
+            <div class="cen">
+                <div class="crop" id='ex1'>
+                    <img src="{{ product.image }}">
+                </div>
+            </div>
+
+            <div class="product_text">
+                <h5>{{ product.title }}</h5>
+                <h6><a href="{{ path('login_category_item', {id:product.category.id}) }}">категория:  {{ product.category.name }}</a></h6>
+                <hr>
+
+                <div class="price">
+                    <h5>{{ product.actualprice }} грн</h5>
+                </div>
+
+                <div class="row center">
+                    <a href="#0" data-price="{{ product.actualprice }}" data-title="{{ product.title }}" data-id="{{ product.id }}" data-img="{{ product.image }}" class="btn-large waves-effect waves-light teal lighten-1 cd-add-to-cart" style="color: white !important;">Купить</a>
+                </div>
+                <b>Описание:</b> {{ product.description }}
+
+                <h6 class="show">Поделится в соцсетях:</h6>
+
+                <div id="social-platforms">
+                    <a href="https://twitter.com/home?status=http%3A//127.0.0.1%3A8000/admin/product/1"
+                       onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=600');return false;"
+                       target="_blank" title="Share on Twitter" class="icon-button twitter"><i class="fa fa-twitter"></i><span></span></a>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A//127.0.0.1%3A8000/admin/product/1"
+                       onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=600');return false;"
+                       target="_blank" title="Share on Facebook" class="icon-button facebook"><i class="fa fa-facebook"></i><span></span></a>
+                    <a href="https://plus.google.com/share?url=http%3A//127.0.0.1%3A8000/admin/product/1"
+                       onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=600');return false;"
+                       target="_blank" class="icon-button google-plus"><i class="fa fa-google-plus"></i><span></span></a>
+                    <a href="https://plus.google.com/share?url=http%3A//127.0.0.1%3A8000/admin/product/1"
+                       onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=600');return false;"
+                       target="_blank" class="icon-button pinterest"><i class="fa fa-pinterest"></i><span></span></a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    <br>
+    <div class="product_id">
+        <div class="comments" id="menu">
+
+            <h6 >КОМЕНТАРИИ:</h6>
+            <hr>
+
+            <div class="row" >
+                <div class="col-md-6">
+                    <div class="widget-area no-padding blank">
+                        <div class="status-upload">
+                            <form method="post">
+                                <textarea placeholder="Напишите коментарий" name="comment" id="answer"></textarea>
+                                <button type="submit" class="btn btn-success">Отправить</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+
+            {% if comments == [] %}
+                <p style="color: grey">Коментариев нет</p>
+                <br>
+            {% else %}
+                {% for comment in comments %}
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div class="panel panel-white post panel-shadow">
+                                <div class="post-heading">
+                                    <div class="pull-left image">
+                                        {% if comment.user.username == 'admin' %}
+                                            <img src="{{ asset('bundles/app/img/admin.png') }}" class="img-circle avatar" alt="user profile image">
+                                        {% else %}
+                                            <img src="{{ asset('bundles/app/img/user.png') }}" class="img-circle avatar" alt="user profile image">
+                                        {% endif %}
+                                    </div>
+                                    <div class="pull-left meta">
+                                        <div class="title h5">
+                                            <a href="#"><b>{{ comment.user.username }}</b></a>
+                                        </div>
+                                    </div>
+
+                                    {% if comment.user.username == auth %}
+                                        <div class="pull-right image" style="float: right">
+                                            <form method="post">
+                                                <button type="submit" name="delete" class="btn btn-default stat-item delete" value="{{ comment.id }}">
+                                                    <img src="{{ asset('bundles/app/img/delete.png') }}" class="img-circle avatar" alt="user profile image" style="width: 28px; height: 28px;">
+                                                </button>
+                                            </form>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="post-description">
+                                    <p>{{ comment.commentary }}</p>
+                                    <div class="stats">
+                                        <form method="post">
+                                            <button type="submit" name="like" class="btn btn-default stat-item" value="{{ comment.id }}">
+                                                <i class="fa fa-thumbs-up icon"></i>{{ comment.likes }}
+                                            </button>
+                                            <button type="submit" name="dislike" class="btn btn-default stat-item" value="{{ comment.id }}">
+                                                <i class="fa fa-thumbs-down icon"></i>{{ comment.dislikes }}
+                                            </button>
+                                            <a href="#answer"  name="{{ comment.user.username }}, " onclick="answer()" style="line-height: 3; float: right; padding: 0 5px;">Ответить</a>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <br>
+        </div>
+
+        <div class="other_product">
+            <h6>Другие работы</h6>
+            <hr>
+            <div class="other_products">
+                {% for products in products3 %}
+                    <a href="{{ path('login_product_item', {id:products.id}) }}"><img src="{{ products.image }}"></a>
+                {% endfor %}
+
+            </div>
+            <br><br><br>
+        </div>
+    </div>
+
+    {% if cookProduct == [] %}
+        <div class="cd-cart-container empty">
+            <a href="#0" class="cd-cart-trigger">
+                Корзина
+                <ul class="count"> <!-- cart items count -->
+                    <li>0</li>
+                    <li>0</li>
+                </ul> <!-- .count -->
+            </a>
+
+            <div class="cd-cart">
+                <div class="wrapper">
+                    <header>
+                        <h2>Выбранные</h2>
+                        <span class="undo">Удалено  <a href="#0">Отменить</a></span>
+                    </header>
+
+                    <div class="body">
+                        <ul>
+                            <!-- products added to the cart will be inserted here using JavaScript -->
+                        </ul>
+                    </div>
+
+                    <footer>
+                        <a href="{{ path('login_cart') }}" class="checkout btn"><em>В корзину</em></a>
+                    </footer>
+                </div>
+            </div> <!-- .cd-cart -->
+        </div>
+    {% else %}
+        <div class="cd-cart-container">
+            <a href="#0" class="cd-cart-trigger">
+                Корзина
+                <ul class="count"> <!-- cart items count -->
+                    <li>{{ count }}</li>
+                    <li>{{ count }}</li>
+                </ul> <!-- .count -->
+            </a>
+
+            <div class="cd-cart">
+                <div class="wrapper">
+                    <header>
+                        <h2>Выбранные</h2>
+                        <span class="undo">Удалено  <a href="#0">Отменить</a></span>
+                    </header>
+
+                    <div class="body">
+                        <ul>
+                            {% for product in cookProduct %}
+                                <li class="product">
+                                    <div class="product-image">
+                                        <a href="{{ path('login_product_item', { id:product.id }) }}">
+                                            <img src="{{ product.image }}" alt="placeholder">
+                                        </a>
+                                    </div>
+                                    <div class="product-details">
+                                        <h3>
+                                            <a href="{{ path('login_product_item', { id:product.id }) }}">{{ product.title }}</a>
+                                        </h3>
+
+                                        <span class="price">{{ product.actualprice }} грн</span>
+
+                                        <div class="actions">
+                                            <a href="#0" class="delete-item" id="{{ product.id }}">Удалить</a>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endfor %}
+
+                            <!-- products added to the cart will be inserted here using JavaScript -->
+                        </ul>
+                    </div>
+
+                    <footer>
+                        <a href="{{ path('login_cart') }}" class="checkout btn"><em>В корзину</em></a>
+                    </footer>
+                </div>
+            </div> <!-- .cd-cart -->
+        </div>
+    {% endif %}
+
+
+
+{% endblock %}
+
+{% block javascripts %}
+
+    <script>
+        function answer() {
+            var username = event.target.getAttribute("name");
+            document.getElementById("answer").value = username;
+        }
+
+    </script>
+
+
+    <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'></script>
+    <script src='{{ asset('bundles/app/js/jquery.zoom.js') }}'></script>
+
+    <script>
+        $(document).ready(function(){
+            $("#menu").on("click","a", function (event) {
+                event.preventDefault();
+                var id  = $(this).attr('href'),
+                    top = $(id).offset().top;
+                $('body,html').animate({scrollTop: top}, 1000);
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function(){
+            $('#ex1').zoom();
+        });
+    </script>
+
+    <script>
+        if( !window.jQuery ) document.write('<script src="{{ asset('bundles/app/js/jquery-3.0.0.min.js') }}"><\/script>');
+    </script>
+    <script src="{{ asset('bundles/app/js/loginmain.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/jquery.cookie.js') }}"></script>
+{% endblock %}
