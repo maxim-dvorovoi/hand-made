@@ -11,20 +11,33 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class CategoryController extends Controller
 {
+    private function cookieAction($cookie)
+    {
+        $arrId = explode(",", $cookie);
+        $arrId = array_unique($arrId);
+        setcookie("id", implode(",", $arrId),time()+86400,'/');
+
+        foreach ($arrId as $value) {
+            $cookProduct [] = $this->getDoctrine()->getRepository('AppBundle:Product')->find($value);
+        }
+        return $cookProduct;
+    }
+
+    private function auth()
+    {
+        if ($this->getUser()) {
+            $auth = $this->getUser()->getRoles();
+            if (in_array('ROLE_USER', $auth)) return $this->redirectToRoute('login_homepage');
+        }
+    }
+
     /**
      * @Route("/category/new/{id}", name="category_item")
      * @Template()
      */
     public function showAction($id,Request $request)
     {
-        $auth = $this->getUser();
-        if ($auth){
-            $auth = $auth->getRoles();
-            if ($auth[0] == 'ROLE_USER'){
-                return $this->redirectToRoute('login_homepage');
-            }
-        }
-
+        $this->auth();
         $category = $this->getDoctrine()->getRepository('AppBundle:Category')->find($id);
         $categories = $this->getDoctrine()->getRepository('AppBundle:Category')->findAll();
 
@@ -44,18 +57,9 @@ class CategoryController extends Controller
         );
 
         $cookProduct = [];
-        $count = 0;
 
         if (isset($_COOKIE["id"])) {
-            $arrId = explode(",", $_COOKIE["id"]);
-            $arrId = array_unique($arrId);
-            setcookie("id", implode(",", $arrId),time()+86400,'/');
-            $i = 0;
-            foreach ($arrId as $value) {
-                $cookProduct [$i] = $this->getDoctrine()->getRepository('AppBundle:Product')->find($value);
-                $i++;
-            }
-            $count = count($cookProduct);
+            $cookProduct = $this->cookieAction($_COOKIE["id"]);
         }
 
         return [
@@ -63,23 +67,16 @@ class CategoryController extends Controller
             'pagination' => $pagination,
             'categories' => $categories,
             'cookProduct' => $cookProduct,
-            'count' => $count,
+            'count' => count($cookProduct)
         ];
     }
 
     /**
      * @Route("/category/top/{id}", name="category_top_item")
      */
-    public function showTopAction($id,Request $request)
+    public function showTopAction($id, Request $request)
     {
-        $auth = $this->getUser();
-        if ($auth){
-            $auth = $auth->getRoles();
-            if ($auth[0] == 'ROLE_USER'){
-                return $this->redirectToRoute('login_homepage');
-            }
-        }
-
+        $this->auth();
         $category = $this->getDoctrine()->getRepository('AppBundle:Category')->find($id);
         $categories = $this->getDoctrine()->getRepository('AppBundle:Category')->findAll();
 
@@ -99,18 +96,9 @@ class CategoryController extends Controller
         );
 
         $cookProduct = [];
-        $count = 0;
 
         if (isset($_COOKIE["id"])) {
-            $arrId = explode(",", $_COOKIE["id"]);
-            $arrId = array_unique($arrId);
-            setcookie("id", implode(",", $arrId),time()+86400,'/');
-            $i = 0;
-            foreach ($arrId as $value) {
-                $cookProduct [$i] = $this->getDoctrine()->getRepository('AppBundle:Product')->find($value);
-                $i++;
-            }
-            $count = count($cookProduct);
+            $cookProduct = $this->cookieAction($_COOKIE["id"]);
         }
 
         return $this->render('@App/category/show_top.html.twig', [
@@ -118,7 +106,7 @@ class CategoryController extends Controller
             'pagination' => $pagination,
             'categories' => $categories,
             'cookProduct' => $cookProduct,
-            'count' => $count,
+            'count' => count($cookProduct)
         ]);
     }
 
@@ -127,14 +115,7 @@ class CategoryController extends Controller
      */
     public function showAllNewAction(Request $request)
     {
-        $auth = $this->getUser();
-        if ($auth){
-            $auth = $auth->getRoles();
-            if ($auth[0] == 'ROLE_USER'){
-                return $this->redirectToRoute('login_homepage');
-            }
-        }
-
+        $this->auth();
         $categories = $this->getDoctrine()->getRepository('AppBundle:Category')->findAll();
 
         $em    = $this->get('doctrine.orm.entity_manager');
@@ -149,25 +130,16 @@ class CategoryController extends Controller
         );
 
         $cookProduct = [];
-        $count = 0;
 
         if (isset($_COOKIE["id"])) {
-            $arrId = explode(",", $_COOKIE["id"]);
-            $arrId = array_unique($arrId);
-            setcookie("id", implode(",", $arrId),time()+86400,'/');
-            $i = 0;
-            foreach ($arrId as $value) {
-                $cookProduct [$i] = $this->getDoctrine()->getRepository('AppBundle:Product')->find($value);
-                $i++;
-            }
-            $count = count($cookProduct);
+            $cookProduct = $this->cookieAction($_COOKIE["id"]);
         }
 
         return $this->render('@App/category/show_all_new.html.twig',[
             'categories' => $categories,
             'pagination' => $pagination,
             'cookProduct' => $cookProduct,
-            'count' => $count,
+            'count' => count($cookProduct)
         ]);
     }
 
@@ -176,14 +148,7 @@ class CategoryController extends Controller
      */
     public function showAllTopAction(Request $request)
     {
-        $auth = $this->getUser();
-        if ($auth){
-            $auth = $auth->getRoles();
-            if ($auth[0] == 'ROLE_USER'){
-                return $this->redirectToRoute('login_homepage');
-            }
-        }
-
+        $this->auth();
         $categories = $this->getDoctrine()->getRepository('AppBundle:Category')->findAll();
 
         $em    = $this->get('doctrine.orm.entity_manager');
@@ -198,32 +163,23 @@ class CategoryController extends Controller
         );
 
         $cookProduct = [];
-        $count = 0;
 
         if (isset($_COOKIE["id"])) {
-            $arrId = explode(",", $_COOKIE["id"]);
-            $arrId = array_unique($arrId);
-            setcookie("id", implode(",", $arrId),time()+86400,'/');
-            $i = 0;
-            foreach ($arrId as $value) {
-                $cookProduct [$i] = $this->getDoctrine()->getRepository('AppBundle:Product')->find($value);
-                $i++;
-            }
-            $count = count($cookProduct);
+            $cookProduct = $this->cookieAction($_COOKIE["id"]);
         }
 
         return $this->render('@App/category/show_all_top.html.twig',[
             'categories' => $categories,
             'pagination' => $pagination,
             'cookProduct' => $cookProduct,
-            'count' => $count,
+            'count' => count($cookProduct)
         ]);
     }
 
     /**
      * @Route("/user/category/new/{id}", name="login_category_item")
      */
-    public function loginAction($id,Request $request)
+    public function loginAction($id, Request $request)
     {
         $category = $this->getDoctrine()->getRepository('AppBundle:Category')->find($id);
         $categories = $this->getDoctrine()->getRepository('AppBundle:Category')->findAll();
@@ -244,18 +200,9 @@ class CategoryController extends Controller
         );
 
         $cookProduct = [];
-        $count = 0;
 
         if (isset($_COOKIE["id"])) {
-            $arrId = explode(",", $_COOKIE["id"]);
-            $arrId = array_unique($arrId);
-            setcookie("id", implode(",", $arrId),time()+86400,'/');
-            $i = 0;
-            foreach ($arrId as $value) {
-                $cookProduct [$i] = $this->getDoctrine()->getRepository('AppBundle:Product')->find($value);
-                $i++;
-            }
-            $count = count($cookProduct);
+            $cookProduct = $this->cookieAction($_COOKIE["id"]);
         }
 
         return $this->render('@App/login/category/show.html.twig', [
@@ -263,14 +210,14 @@ class CategoryController extends Controller
             'pagination' => $pagination,
             'categories' => $categories,
             'cookProduct' => $cookProduct,
-            'count' => $count,
+            'count' => count($cookProduct)
         ]);
     }
 
     /**
      * @Route("/user/category/top/{id}", name="login_category_top_item")
      */
-    public function showToploginAction($id,Request $request)
+    public function showToploginAction($id, Request $request)
     {
         $category = $this->getDoctrine()->getRepository('AppBundle:Category')->find($id);
         $categories = $this->getDoctrine()->getRepository('AppBundle:Category')->findAll();
@@ -291,18 +238,16 @@ class CategoryController extends Controller
         );
 
         $cookProduct = [];
-        $count = 0;
 
         if (isset($_COOKIE["id"])) {
             $arrId = explode(",", $_COOKIE["id"]);
             $arrId = array_unique($arrId);
             setcookie("id", implode(",", $arrId),time()+86400,'/');
-            $i = 0;
+
             foreach ($arrId as $value) {
-                $cookProduct [$i] = $this->getDoctrine()->getRepository('AppBundle:Product')->find($value);
-                $i++;
+                $cookProduct [] = $this->getDoctrine()->getRepository('AppBundle:Product')->find($value);
+
             }
-            $count = count($cookProduct);
         }
 
         return $this->render('@App/login/category/show_top.html.twig', [
@@ -310,9 +255,7 @@ class CategoryController extends Controller
             'pagination' => $pagination,
             'categories' => $categories,
             'cookProduct' => $cookProduct,
-            'count' => $count,
-
-
+            'count' => count($cookProduct)
         ]);
     }
 
@@ -335,26 +278,16 @@ class CategoryController extends Controller
         );
 
         $cookProduct = [];
-        $count = 0;
 
         if (isset($_COOKIE["id"])) {
-            $arrId = explode(",", $_COOKIE["id"]);
-            $arrId = array_unique($arrId);
-            setcookie("id", implode(",", $arrId),time()+86400,'/');
-            $i = 0;
-            foreach ($arrId as $value) {
-                $cookProduct [$i] = $this->getDoctrine()->getRepository('AppBundle:Product')->find($value);
-                $i++;
-            }
-            $count = count($cookProduct);
+            $cookProduct = $this->cookieAction($_COOKIE["id"]);
         }
 
         return $this->render('@App/login/category/show_all_new.html.twig',[
             'categories' => $categories,
             'pagination' => $pagination,
             'cookProduct' => $cookProduct,
-            'count' => $count,
-
+            'count' => count($cookProduct)
         ]);
     }
 
@@ -377,33 +310,23 @@ class CategoryController extends Controller
         );
 
         $cookProduct = [];
-        $count = 0;
 
         if (isset($_COOKIE["id"])) {
-            $arrId = explode(",", $_COOKIE["id"]);
-            $arrId = array_unique($arrId);
-            setcookie("id", implode(",", $arrId),time()+86400,'/');
-            $i = 0;
-            foreach ($arrId as $value) {
-                $cookProduct [$i] = $this->getDoctrine()->getRepository('AppBundle:Product')->find($value);
-                $i++;
-            }
-            $count = count($cookProduct);
+            $cookProduct = $this->cookieAction($_COOKIE["id"]);
         }
 
         return $this->render('@App/login/category/show_all_top.html.twig',[
             'categories' => $categories,
             'pagination' => $pagination,
             'cookProduct' => $cookProduct,
-            'count' => $count,
-
+            'count' => count($cookProduct)
         ]);
     }
 
     /**
      * @Route("/admin/category/new/{id}", name="admin_category_item")
      */
-    public function adminAction($id,Request $request)
+    public function adminAction($id, Request $request)
     {
         $category = $this->getDoctrine()->getRepository('AppBundle:Category')->find($id);
         $categories = $this->getDoctrine()->getRepository('AppBundle:Category')->findAll();
@@ -424,18 +347,9 @@ class CategoryController extends Controller
         );
 
         $cookProduct = [];
-        $count = 0;
 
         if (isset($_COOKIE["id"])) {
-            $arrId = explode(",", $_COOKIE["id"]);
-            $arrId = array_unique($arrId);
-            setcookie("id", implode(",", $arrId),time()+86400,'/');
-            $i = 0;
-            foreach ($arrId as $value) {
-                $cookProduct [$i] = $this->getDoctrine()->getRepository('AppBundle:Product')->find($value);
-                $i++;
-            }
-            $count = count($cookProduct);
+            $cookProduct = $this->cookieAction($_COOKIE["id"]);
         }
 
         return $this->render('@App/admin/category/show.html.twig', [
@@ -443,15 +357,14 @@ class CategoryController extends Controller
             'pagination' => $pagination,
             'categories' => $categories,
             'cookProduct' => $cookProduct,
-            'count' => $count,
-
+            'count' => count($cookProduct)
         ]);
     }
 
     /**
      * @Route("/admin/category/top/{id}", name="admin_category_top_item")
      */
-    public function showTopAdminAction($id,Request $request)
+    public function showTopAdminAction($id, Request $request)
     {
         $category = $this->getDoctrine()->getRepository('AppBundle:Category')->find($id);
         $categories = $this->getDoctrine()->getRepository('AppBundle:Category')->findAll();
@@ -472,18 +385,9 @@ class CategoryController extends Controller
         );
 
         $cookProduct = [];
-        $count = 0;
 
         if (isset($_COOKIE["id"])) {
-            $arrId = explode(",", $_COOKIE["id"]);
-            $arrId = array_unique($arrId);
-            setcookie("id", implode(",", $arrId),time()+86400,'/');
-            $i = 0;
-            foreach ($arrId as $value) {
-                $cookProduct [$i] = $this->getDoctrine()->getRepository('AppBundle:Product')->find($value);
-                $i++;
-            }
-            $count = count($cookProduct);
+            $cookProduct = $this->cookieAction($_COOKIE["id"]);
         }
 
 
@@ -492,8 +396,7 @@ class CategoryController extends Controller
             'pagination' => $pagination,
             'categories' => $categories,
             'cookProduct' => $cookProduct,
-            'count' => $count,
-
+            'count' => count($cookProduct)
         ]);
     }
 
@@ -516,25 +419,16 @@ class CategoryController extends Controller
         );
 
         $cookProduct = [];
-        $count = 0;
 
         if (isset($_COOKIE["id"])) {
-            $arrId = explode(",", $_COOKIE["id"]);
-            $arrId = array_unique($arrId);
-            setcookie("id", implode(",", $arrId),time()+86400,'/');
-            $i = 0;
-            foreach ($arrId as $value) {
-                $cookProduct [$i] = $this->getDoctrine()->getRepository('AppBundle:Product')->find($value);
-                $i++;
-            }
-            $count = count($cookProduct);
+            $cookProduct = $this->cookieAction($_COOKIE["id"]);
         }
 
         return $this->render('@App/admin/category/show_all_new.html.twig',[
             'categories' => $categories,
             'pagination' => $pagination,
             'cookProduct' => $cookProduct,
-            'count' => $count,
+            'count' => count($cookProduct)
         ]);
     }
 
@@ -557,32 +451,23 @@ class CategoryController extends Controller
         );
 
         $cookProduct = [];
-        $count = 0;
 
         if (isset($_COOKIE["id"])) {
-            $arrId = explode(",", $_COOKIE["id"]);
-            $arrId = array_unique($arrId);
-            setcookie("id", implode(",", $arrId),time()+86400,'/');
-            $i = 0;
-            foreach ($arrId as $value) {
-                $cookProduct [$i] = $this->getDoctrine()->getRepository('AppBundle:Product')->find($value);
-                $i++;
-            }
-            $count = count($cookProduct);
+            $cookProduct = $this->cookieAction($_COOKIE["id"]);
         }
 
         return $this->render('@App/admin/category/show_all_top.html.twig',[
             'categories' => $categories,
             'pagination' => $pagination,
             'cookProduct' => $cookProduct,
-            'count' => $count,
+            'count' => count($cookProduct)
         ]);
     }
 
     /**
      * @Route("/admin/category/edit", name="admin_category_edit")
      */
-    public function editAdminAction(Request $request)
+    public function editAdminAction()
     {
         $categories = $this->getDoctrine()->getRepository('AppBundle:Category')->findAll();
 

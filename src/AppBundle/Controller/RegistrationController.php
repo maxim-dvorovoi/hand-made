@@ -1,7 +1,6 @@
 <?php
 namespace AppBundle\Controller;
 
-use AppBundle\AppBundle;
 use AppBundle\Form\UserType;
 use AppBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -14,14 +13,11 @@ class RegistrationController extends Controller
     /**
      * @Route("/register", name="user_registration")
      */
-    public function registerAction(Request $request, UserPasswordEncoderInterface $passwordEncoder)
+    public function registerAction(UserPasswordEncoderInterface $passwordEncoder, Request $request)
     {
-        $auth = $this->getUser();
-        if ($auth){
-            $auth = $auth->getRoles();
-            if ($auth[0] == 'ROLE_USER'){
-                return $this->redirectToRoute('login_homepage');
-            }
+        if ($this->getUser()) {
+            $auth = $this->getUser()->getRoles();
+            if (in_array('ROLE_USER', $auth)) return $this->redirectToRoute('login_homepage');
         }
 
         $categories = $this->getDoctrine()->getRepository('AppBundle:Category')->findAll();

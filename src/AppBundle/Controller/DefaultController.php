@@ -7,141 +7,59 @@ use AppBundle\Entity\Product;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use AppBundle\Entity\Comments;
 
 class DefaultController extends Controller
 {
+    private function cookieAction($cookie)
+    {
+        $arrId = explode(",", $cookie);
+        $arrId = array_unique($arrId);
+        setcookie("id", implode(",", $arrId),time()+86400,'/');
+
+        foreach ($arrId as $value) {
+            $cookProduct [] = $this->getDoctrine()->getRepository('AppBundle:Product')->find($value);
+        }
+        return $cookProduct;
+    }
+
+    private function auth()
+    {
+        if ($this->getUser()) {
+            $auth = $this->getUser()->getRoles();
+            if (in_array('ROLE_USER', $auth)) return $this->redirectToRoute('login_homepage');
+        }
+    }
+
     /**
      * @Route("/", name="homepage")
      */
-    public function indexAction(Request $request)
+    public function indexAction()
     {
-        $auth = $this->getUser();
-        if ($auth){
-            $auth = $auth->getRoles();
-            if ($auth[0] == 'ROLE_USER'){
-                return $this->redirectToRoute('login_homepage');
-            }
-        }
-
+        $this->auth();
         $products = $this->getDoctrine()->getRepository('AppBundle:Product')->get9Products();
         $categories = $this->getDoctrine()->getRepository('AppBundle:Category')->findAll();
 
         $cookProduct = [];
-        $count = 0;
 
         if (isset($_COOKIE["id"])) {
-            $arrId = explode(",", $_COOKIE["id"]);
-            $arrId = array_unique($arrId);
-            setcookie("id", implode(",", $arrId),time()+86400,'/');
-            $i = 0;
-            foreach ($arrId as $value) {
-                $cookProduct [$i] = $this->getDoctrine()->getRepository('AppBundle:Product')->find($value);
-                $i++;
-            }
-            $count = count($cookProduct);
+            $cookProduct = $this->cookieAction($_COOKIE["id"]);
         }
 
         return $this->render('@App/default/index.html.twig',[
             'products' => $products,
             'categories' => $categories,
             'cookProduct' => $cookProduct,
-            'count' => $count
+            'count' => count($cookProduct)
         ]);
     }
 
-
-    /**
-     * @Route("/product/{id}", name="product_item")
-     */
-    public function showAction($id)
-    {
-        $auth = $this->getUser();
-        if ($auth){
-            $auth = $auth->getRoles();
-            if ($auth[0] == 'ROLE_USER'){
-                return $this->redirectToRoute('login_homepage');
-            }
-        }
-
-        $product = $this->getDoctrine()->getRepository('AppBundle:Product')->find($id);
-        $products3 = $this->getDoctrine()->getRepository('AppBundle:Product')->get3Products();
-        $categories = $this->getDoctrine()->getRepository('AppBundle:Category')->findAll();
-
-        if (!$product) {
-            throw $this->createNotFoundException('Post not found');
-        }
-
-        $views = $product->getViews();
-        $product->setViews( $views + 1);
-        $this->getDoctrine()->getManager()->persist($product);
-        $this->getDoctrine()->getManager()->flush();
-        $comments = $this->getDoctrine()->getRepository('AppBundle:Comments')->findBy(['product' => $id]);
-
-        if (isset($_POST['like'])) {
-            $votes_id = $_POST['like'];
-            $comment = $this->getDoctrine()->getRepository('AppBundle:Comments')->findBy(['id' => $votes_id])[0];
-            $votes = $comment->getLikes();
-            $comment->setLikes($votes + 1);
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($comment);
-
-            $entityManager->flush();
-            return $this->redirectToRoute('product_item', ['id' => $id]);
-        }
-
-        if (isset($_POST['dislike'])) {
-            $votes_id = $_POST['dislike'];
-            $comment = $this->getDoctrine()->getRepository('AppBundle:Comments')->findBy(['id' => $votes_id])[0];
-            $votes = $comment->getDislikes();
-            $comment->setDislikes($votes + 1);
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($comment);
-
-            $entityManager->flush();
-            return $this->redirectToRoute('product_item', ['id' => $id]);
-        }
-
-        $cookProduct = [];
-        $count = 0;
-
-        if (isset($_COOKIE["id"])) {
-            $arrId = explode(",", $_COOKIE["id"]);
-            $arrId = array_unique($arrId);
-            setcookie("id", implode(",", $arrId),time()+86400,'/');
-            $i = 0;
-            foreach ($arrId as $value) {
-                $cookProduct [$i] = $this->getDoctrine()->getRepository('AppBundle:Product')->find($value);
-                $i++;
-            }
-            $count = count($cookProduct);
-        }
-
-        return $this->render('@App/default/show.html.twig', [
-            'product' => $product,
-            'products3' => $products3,
-            'comments' => $comments,
-            'categories' => $categories,
-            'cookProduct' => $cookProduct,
-            'count' => $count
-        ]);
-    }
 
     /**
      * @Route("/photo", name="photo")
      */
     public function photoAction(Request $request)
     {
-        $auth = $this->getUser();
-        if ($auth){
-            $auth = $auth->getRoles();
-            if ($auth[0] == 'ROLE_USER'){
-                return $this->redirectToRoute('login_homepage');
-            }
-        }
-
+        $this->auth();
         $categories = $this->getDoctrine()->getRepository('AppBundle:Category')->findAll();
 
         $em    = $this->get('doctrine.orm.entity_manager');
@@ -156,130 +74,73 @@ class DefaultController extends Controller
         );
 
         $cookProduct = [];
-        $count = 0;
 
         if (isset($_COOKIE["id"])) {
-            $arrId = explode(",", $_COOKIE["id"]);
-            $arrId = array_unique($arrId);
-            setcookie("id", implode(",", $arrId),time()+86400,'/');
-            $i = 0;
-            foreach ($arrId as $value) {
-                $cookProduct [$i] = $this->getDoctrine()->getRepository('AppBundle:Product')->find($value);
-                $i++;
-            }
-            $count = count($cookProduct);
+            $cookProduct = $this->cookieAction($_COOKIE["id"]);
         }
 
         return $this->render('@App/default/photo.html.twig',[
             'categories' => $categories,
             'pagination' => $pagination,
             'cookProduct' => $cookProduct,
-            'count' => $count
+            'count' => count($cookProduct)
         ]);
     }
 
     /**
      * @Route("/delivery", name="delivery")
      */
-    public function deliveryAction(Request $request)
+    public function deliveryAction()
     {
-        $auth = $this->getUser();
-        if ($auth){
-            $auth = $auth->getRoles();
-            if ($auth[0] == 'ROLE_USER'){
-                return $this->redirectToRoute('login_homepage');
-            }
-        }
-
+        $this->auth();
         $categories = $this->getDoctrine()->getRepository('AppBundle:Category')->findAll();
 
         $cookProduct = [];
-        $count = 0;
 
         if (isset($_COOKIE["id"])) {
-            $arrId = explode(",", $_COOKIE["id"]);
-            $arrId = array_unique($arrId);
-            setcookie("id", implode(",", $arrId),time()+86400,'/');
-            $i = 0;
-            foreach ($arrId as $value) {
-                $cookProduct [$i] = $this->getDoctrine()->getRepository('AppBundle:Product')->find($value);
-                $i++;
-            }
-            $count = count($cookProduct);
+            $cookProduct = $this->cookieAction($_COOKIE["id"]);
         }
 
         return $this->render('@App/default/delivery.html.twig',[
             'categories' => $categories,
             'cookProduct' => $cookProduct,
-            'count' => $count
+            'count' => count($cookProduct)
         ]);
     }
 
     /**
      * @Route("/contact", name="contact")
      */
-    public function contactAction(Request $request)
+    public function contactAction()
     {
-        $auth = $this->getUser();
-        if ($auth){
-            $auth = $auth->getRoles();
-            if ($auth[0] == 'ROLE_USER'){
-                return $this->redirectToRoute('login_homepage');
-            }
-        }
-
+        $this->auth();
         $categories = $this->getDoctrine()->getRepository('AppBundle:Category')->findAll();
 
         $cookProduct = [];
-        $count = 0;
 
         if (isset($_COOKIE["id"])) {
-            $arrId = explode(",", $_COOKIE["id"]);
-            $arrId = array_unique($arrId);
-            setcookie("id", implode(",", $arrId),time()+86400,'/');
-            $i = 0;
-            foreach ($arrId as $value) {
-                $cookProduct [$i] = $this->getDoctrine()->getRepository('AppBundle:Product')->find($value);
-                $i++;
-            }
-            $count = count($cookProduct);
+            $cookProduct = $this->cookieAction($_COOKIE["id"]);
         }
 
         return $this->render('@App/default/contact.html.twig',[
             'categories' => $categories,
             'cookProduct' => $cookProduct,
-            'count' => $count
+            'count' => count($cookProduct)
         ]);
     }
 
     /**
      * @Route("/cart", name="cart")
      */
-    public function cartAction(Request $request)
+    public function cartAction()
     {
-        $auth = $this->getUser();
-        if ($auth){
-            $auth = $auth->getRoles();
-            if ($auth[0] == 'ROLE_USER'){
-                return $this->redirectToRoute('login_homepage');
-            }
-        }
-
+        $this->auth();
         $categories = $this->getDoctrine()->getRepository('AppBundle:Category')->findAll();
         $cookProduct = [];
-        $count = 0;
         $price = 0;
 
         if (isset($_COOKIE["id"])) {
-            $arrId = explode(",", $_COOKIE["id"]);
-            $arrId = array_unique($arrId);
-            setcookie("id", implode(",", $arrId),time()+86400,'/');
-            $i = 0;
-            foreach ($arrId as $value) {
-                $cookProduct [$i] = $this->getDoctrine()->getRepository('AppBundle:Product')->find($value);
-                $i++;
-            }
-            $count = count($cookProduct);
+            $cookProduct = $this->cookieAction($_COOKIE["id"]);
         }
 
         if ($cookProduct != []) {
@@ -295,7 +156,7 @@ class DefaultController extends Controller
         return $this->render('@App/default/cart.html.twig',[
             'categories' => $categories,
             'cookProduct' => $cookProduct,
-            'count' => $count,
+            'count' => count($cookProduct),
             'price' => $price
         ]);
     }
@@ -396,142 +257,16 @@ class DefaultController extends Controller
         $categories = $this->getDoctrine()->getRepository('AppBundle:Category')->findAll();
 
         $cookProduct = [];
-        $count = 0;
 
         if (isset($_COOKIE["id"])) {
-            $arrId = explode(",", $_COOKIE["id"]);
-            $arrId = array_unique($arrId);
-            setcookie("id", implode(",", $arrId),time()+86400,'/');
-            $i = 0;
-            foreach ($arrId as $value) {
-                $cookProduct [$i] = $this->getDoctrine()->getRepository('AppBundle:Product')->find($value);
-                $i++;
-            }
-            $count = count($cookProduct);
+            $cookProduct = $this->cookieAction($_COOKIE["id"]);
         }
 
         return $this->render('@App/login/default/index.html.twig',[
             'products' => $products,
             'categories' => $categories,
             'cookProduct' => $cookProduct,
-            'count' => $count
-        ]);
-    }
-
-    /**
-     * @Route("/user/product/{id}", name="login_product_item")
-     */
-    public function showloginAction($id)
-    {
-        $auth = $this->getUser()->getUsername();
-
-        $product = $this->getDoctrine()->getRepository('AppBundle:Product')->find($id);
-        $categories = $this->getDoctrine()->getRepository('AppBundle:Category')->findAll();
-        $products3 = $this->getDoctrine()->getRepository('AppBundle:Product')->get3Products();
-
-        if (!$product) {
-            throw $this->createNotFoundException('Post not found');
-        }
-
-        $views = $product->getViews();
-        $product->setViews( $views + 1);
-        $this->getDoctrine()->getManager()->persist($product);
-        $this->getDoctrine()->getManager()->flush();
-        $comments = $this->getDoctrine()->getRepository('AppBundle:Comments')->findBy(['product' => $id]);
-
-        if (isset($_POST['comment'])) {
-            $commentary = $_POST['comment'];
-
-            $com = explode(" ", $commentary);
-            $i=0;
-
-            foreach ($com as $value) {
-                if ($value != '') {
-                   $comm [$i] = $value;
-                   $i++;
-                }
-            }
-
-            if ($comm) {$commentary = implode(" ", $comm);}
-
-            $userid = $this->getUser()->getId();
-            $user = $this->getDoctrine()->getRepository('AppBundle:User')->find($userid);
-            $Comments = new Comments();
-            $Comments->setUser($user);
-            $Comments->setProduct($product);
-            $Comments->setCommentary($commentary);
-            $Comments->setLikes(0);
-            $Comments->setDislikes(0);
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($Comments);
-
-            $entityManager->flush();
-
-            return $this->redirectToRoute('login_product_item', ['id' => $id]);
-        }
-
-
-        if (isset($_POST['like'])) {
-            $votes_id = $_POST['like'];
-            $comment = $this->getDoctrine()->getRepository('AppBundle:Comments')->findBy(['id' => $votes_id])[0];
-            $votes = $comment->getLikes();
-            $comment->setLikes($votes + 1);
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($comment);
-
-            $entityManager->flush();
-            return $this->redirectToRoute('login_product_item', ['id' => $id]);
-        }
-
-        if (isset($_POST['dislike'])) {
-            $votes_id = $_POST['dislike'];
-            $comment = $this->getDoctrine()->getRepository('AppBundle:Comments')->findBy(['id' => $votes_id])[0];
-            $votes = $comment->getDislikes();
-            $comment->setDislikes($votes + 1);
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($comment);
-
-            $entityManager->flush();
-            return $this->redirectToRoute('login_product_item', ['id' => $id]);
-        }
-
-        if (isset($_POST['delete'])) {
-            $votes_id = $_POST['delete'];
-            $comment = $this->getDoctrine()->getRepository('AppBundle:Comments')->findBy(['id' => $votes_id])[0];
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($comment);
-
-            $entityManager->flush();
-            return $this->redirectToRoute('admin_product_item', ['id' => $id]);
-        }
-
-        $cookProduct = [];
-        $count = 0;
-
-        if (isset($_COOKIE["id"])) {
-            $arrId = explode(",", $_COOKIE["id"]);
-            $arrId = array_unique($arrId);
-            setcookie("id", implode(",", $arrId),time()+86400,'/');
-            $i = 0;
-            foreach ($arrId as $value) {
-                $cookProduct [$i] = $this->getDoctrine()->getRepository('AppBundle:Product')->find($value);
-                $i++;
-            }
-            $count = count($cookProduct);
-        }
-
-        return $this->render('@App/login/default/show.html.twig', [
-            'product' => $product,
-            'products3' => $products3,
-            'comments' => $comments,
-            'categories' => $categories,
-            'cookProduct' => $cookProduct,
-            'count' => $count,
-            'auth' => $auth
+            'count' => count($cookProduct)
         ]);
     }
 
@@ -554,106 +289,68 @@ class DefaultController extends Controller
         );
 
         $cookProduct = [];
-        $count = 0;
 
         if (isset($_COOKIE["id"])) {
-            $arrId = explode(",", $_COOKIE["id"]);
-            $arrId = array_unique($arrId);
-            setcookie("id", implode(",", $arrId),time()+86400,'/');
-            $i = 0;
-            foreach ($arrId as $value) {
-                $cookProduct [$i] = $this->getDoctrine()->getRepository('AppBundle:Product')->find($value);
-                $i++;
-            }
-            $count = count($cookProduct);
+            $cookProduct = $this->cookieAction($_COOKIE["id"]);
         }
 
         return $this->render('@App/login/default/photo.html.twig',[
             'categories' => $categories,
             'pagination' => $pagination,
             'cookProduct' => $cookProduct,
-            'count' => $count
+            'count' => count($cookProduct)
         ]);
     }
 
     /**
      * @Route("/user/delivery", name="login_delivery")
      */
-    public function deliveryloginAction(Request $request)
+    public function deliveryloginAction()
     {
         $categories = $this->getDoctrine()->getRepository('AppBundle:Category')->findAll();
         $cookProduct = [];
-        $count = 0;
 
         if (isset($_COOKIE["id"])) {
-            $arrId = explode(",", $_COOKIE["id"]);
-            $arrId = array_unique($arrId);
-            setcookie("id", implode(",", $arrId),time()+86400,'/');
-            $i = 0;
-            foreach ($arrId as $value) {
-                $cookProduct [$i] = $this->getDoctrine()->getRepository('AppBundle:Product')->find($value);
-                $i++;
-            }
-            $count = count($cookProduct);
+            $cookProduct = $this->cookieAction($_COOKIE["id"]);
         }
-
 
         return $this->render('@App/login/default/delivery.html.twig',[
             'categories' => $categories,
             'cookProduct' => $cookProduct,
-            'count' => $count
+            'count' => count($cookProduct)
         ]);
     }
 
     /**
      * @Route("/user/contact", name="login_contact")
      */
-    public function contactloginAction(Request $request)
+    public function contactloginAction()
     {
         $categories = $this->getDoctrine()->getRepository('AppBundle:Category')->findAll();
         $cookProduct = [];
-        $count = 0;
 
         if (isset($_COOKIE["id"])) {
-            $arrId = explode(",", $_COOKIE["id"]);
-            $arrId = array_unique($arrId);
-            setcookie("id", implode(",", $arrId),time()+86400,'/');
-            $i = 0;
-            foreach ($arrId as $value) {
-                $cookProduct [$i] = $this->getDoctrine()->getRepository('AppBundle:Product')->find($value);
-                $i++;
-            }
-            $count = count($cookProduct);
+            $cookProduct = $this->cookieAction($_COOKIE["id"]);
         }
-
 
         return $this->render('@App/login/default/contact.html.twig',[
             'categories' => $categories,
             'cookProduct' => $cookProduct,
-            'count' => $count
+            'count' => count($cookProduct)
         ]);
     }
 
     /**
      * @Route("/user/cart", name="login_cart")
      */
-    public function cartloginAction(Request $request)
+    public function cartloginAction()
     {
         $categories = $this->getDoctrine()->getRepository('AppBundle:Category')->findAll();
         $cookProduct = [];
-        $count = 0;
         $price = 0;
 
         if (isset($_COOKIE["id"])) {
-            $arrId = explode(",", $_COOKIE["id"]);
-            $arrId = array_unique($arrId);
-            setcookie("id", implode(",", $arrId),time()+86400,'/');
-            $i = 0;
-            foreach ($arrId as $value) {
-                $cookProduct [$i] = $this->getDoctrine()->getRepository('AppBundle:Product')->find($value);
-                $i++;
-            }
-            $count = count($cookProduct);
+            $cookProduct = $this->cookieAction($_COOKIE["id"]);
         }
 
         if ($cookProduct != []) {
@@ -669,7 +366,7 @@ class DefaultController extends Controller
         return $this->render('@App/login/default/cart.html.twig',[
             'categories' => $categories,
             'cookProduct' => $cookProduct,
-            'count' => $count,
+            'count' => count($cookProduct),
             'price' => $price
         ]);
     }
@@ -768,138 +465,21 @@ class DefaultController extends Controller
         $products = $this->getDoctrine()->getRepository('AppBundle:Product')->get9Products();
         $categories = $this->getDoctrine()->getRepository('AppBundle:Category')->findAll();
         $cookProduct = [];
-        $count = 0;
 
         if (isset($_COOKIE["id"])) {
             $arrId = explode(",", $_COOKIE["id"]);
             $arrId = array_unique($arrId);
             setcookie("id", implode(",", $arrId), time()+86400,'/');
-            $i = 0;
+
             foreach ($arrId as $value) {
-                $cookProduct [$i] = $this->getDoctrine()->getRepository('AppBundle:Product')->find($value);
-                $i++;
+                $cookProduct [] = $this->getDoctrine()->getRepository('AppBundle:Product')->find($value);
             }
-            $count = count($cookProduct);
         }
         return $this->render('@App/admin/default/index.html.twig',[
             'products' => $products,
             'categories' => $categories,
             'cookProduct' => $cookProduct,
-            'count' => $count
-        ]);
-    }
-
-    /**
-     * @Route("/admin/product/{id}", name="admin_product_item")
-     */
-    public function showAdminAction($id)
-    {
-
-        $product = $this->getDoctrine()->getRepository('AppBundle:Product')->find($id);
-        $categories = $this->getDoctrine()->getRepository('AppBundle:Category')->findAll();
-        $products3 = $this->getDoctrine()->getRepository('AppBundle:Product')->get3Products();
-
-        if (!$product) {
-            throw $this->createNotFoundException('Post not found');
-        }
-
-        $comments = $this->getDoctrine()->getRepository('AppBundle:Comments')->findBy(['product' => $id]);
-
-        if (isset($_POST['comment'])) {
-            $commentary = $_POST['comment'];
-
-            $com = explode(" ", $commentary);
-            $i=0;
-            $comm = false;
-
-            foreach ($com as $value) {
-                if ($value != '') {
-                    $comm [$i] = $value;
-                    $i++;
-                }
-            }
-
-            if ($comm) {
-                $commentary = implode(" ", $comm);
-                $user = $this->getDoctrine()->getRepository('AppBundle:User')->find(2);
-                $Comments = new Comments();
-                $Comments->setUser($user);
-                $Comments->setProduct($product);
-                $Comments->setCommentary($commentary);
-                $Comments->setLikes(0);
-                $Comments->setDislikes(0);
-
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->persist($Comments);
-
-                $entityManager->flush();
-            }
-
-            return $this->redirectToRoute('admin_product_item', ['id' => $id]);
-        }
-
-
-        if (isset($_POST['like'])) {
-            $votes_id = $_POST['like'];
-            $comment = $this->getDoctrine()->getRepository('AppBundle:Comments')->findBy(['id' => $votes_id])[0];
-            $votes = $comment->getLikes();
-            $comment->setLikes($votes + 1);
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($comment);
-
-            $entityManager->flush();
-            return $this->redirectToRoute('admin_product_item', ['id' => $id]);
-        }
-
-        if (isset($_POST['dislike'])) {
-            $votes_id = $_POST['dislike'];
-            $comment = $this->getDoctrine()->getRepository('AppBundle:Comments')->findBy(['id' => $votes_id])[0];
-            $votes = $comment->getDislikes();
-            $comment->setDislikes($votes + 1);
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($comment);
-
-            $entityManager->flush();
-            return $this->redirectToRoute('admin_product_item', ['id' => $id]);
-        }
-
-        if (isset($_POST['delete'])) {
-            $votes_id = $_POST['delete'];
-            $comment = $this->getDoctrine()->getRepository('AppBundle:Comments')->findBy(['id' => $votes_id])[0];
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($comment);
-
-            $entityManager->flush();
-            return $this->redirectToRoute('admin_product_item', ['id' => $id]);
-        }
-
-        $cookProduct = [];
-        $count = 0;
-        $price = 0;
-
-        if (isset($_COOKIE["id"])) {
-            $arrId = explode(",", $_COOKIE["id"]);
-            $arrId = array_unique($arrId);
-            setcookie("id", implode(",", $arrId),time()+86400,'/');
-            $i = 0;
-            foreach ($arrId as $value) {
-                $cookProduct [$i] = $this->getDoctrine()->getRepository('AppBundle:Product')->find($value);
-                $i++;
-            }
-            $count = count($cookProduct);
-        }
-
-        return $this->render('@App/admin/default/show.html.twig', [
-            'product' => $product,
-            'comments' => $comments,
-            'categories' => $categories,
-            'products3' => $products3,
-            'cookProduct' => $cookProduct,
-            'count' => $count,
-            'price' => $price
+            'count' => count($cookProduct)
         ]);
     }
 
@@ -973,26 +553,17 @@ class DefaultController extends Controller
         );
 
         $cookProduct = [];
-        $count = 0;
         $price = 0;
 
         if (isset($_COOKIE["id"])) {
-            $arrId = explode(",", $_COOKIE["id"]);
-            $arrId = array_unique($arrId);
-            setcookie("id", implode(",", $arrId),time()+86400,'/');
-            $i = 0;
-            foreach ($arrId as $value) {
-                $cookProduct [$i] = $this->getDoctrine()->getRepository('AppBundle:Product')->find($value);
-                $i++;
-            }
-            $count = count($cookProduct);
+            $cookProduct = $this->cookieAction($_COOKIE["id"]);
         }
 
         return $this->render('@App/admin/default/photo.html.twig',[
             'categories' => $categories,
             'pagination' => $pagination,
             'cookProduct' => $cookProduct,
-            'count' => $count,
+            'count' => count($cookProduct),
             'price' => $price
         ]);
     }
@@ -1000,30 +571,21 @@ class DefaultController extends Controller
     /**
      * @Route("/admin/delivery", name="admin_delivery")
      */
-    public function deliveryAdminAction(Request $request)
+    public function deliveryAdminAction()
     {
         $categories = $this->getDoctrine()->getRepository('AppBundle:Category')->findAll();
         $cookProduct = [];
-        $count = 0;
         $price = 0;
 
         if (isset($_COOKIE["id"])) {
-            $arrId = explode(",", $_COOKIE["id"]);
-            $arrId = array_unique($arrId);
-            setcookie("id", implode(",", $arrId),time()+86400,'/');
-            $i = 0;
-            foreach ($arrId as $value) {
-                $cookProduct [$i] = $this->getDoctrine()->getRepository('AppBundle:Product')->find($value);
-                $i++;
-            }
-            $count = count($cookProduct);
+            $cookProduct = $this->cookieAction($_COOKIE["id"]);
         }
 
 
         return $this->render('@App/admin/default/delivery.html.twig',[
             'categories' => $categories,
             'cookProduct' => $cookProduct,
-            'count' => $count,
+            'count' => count($cookProduct),
             'price' => $price
         ]);
     }
@@ -1031,30 +593,21 @@ class DefaultController extends Controller
     /**
      * @Route("/admin/contact", name="admin_contact")
      */
-    public function contactAdminAction(Request $request)
+    public function contactAdminAction()
     {
         $categories = $this->getDoctrine()->getRepository('AppBundle:Category')->findAll();
         $cookProduct = [];
-        $count = 0;
         $price = 0;
 
         if (isset($_COOKIE["id"])) {
-            $arrId = explode(",", $_COOKIE["id"]);
-            $arrId = array_unique($arrId);
-            setcookie("id", implode(",", $arrId),time()+86400,'/');
-            $i = 0;
-            foreach ($arrId as $value) {
-                $cookProduct [$i] = $this->getDoctrine()->getRepository('AppBundle:Product')->find($value);
-                $i++;
-            }
-            $count = count($cookProduct);
+            $cookProduct = $this->cookieAction($_COOKIE["id"]);
         }
 
 
         return $this->render('@App/admin/default/contact.html.twig',[
             'categories' => $categories,
             'cookProduct' => $cookProduct,
-            'count' => $count,
+            'count' => count($cookProduct),
             'price' => $price
         ]);
     }
@@ -1062,11 +615,10 @@ class DefaultController extends Controller
     /**
      * @Route("/admin/cart", name="admin_cart")
      */
-    public function cartAdminAction(Request $request)
+    public function cartAdminAction()
     {
         $categories = $this->getDoctrine()->getRepository('AppBundle:Category')->findAll();
         $cookProduct = [];
-        $count = 0;
         $price = 0;
 
         if (isset($_COOKIE["id"])) {
@@ -1074,12 +626,10 @@ class DefaultController extends Controller
             $arrId = array_unique($arrId);
             dump($arrId);
             setcookie("id", implode(",", $arrId),time()+86400,'/');
-            $i = 0;
+
             foreach ($arrId as $value) {
-                $cookProduct [$i] = $this->getDoctrine()->getRepository('AppBundle:Product')->find($value);
-                $i++;
+                $cookProduct [] = $this->getDoctrine()->getRepository('AppBundle:Product')->find($value);
             }
-            $count = count($cookProduct);
         }
 
         dump($_COOKIE["id"]);
@@ -1097,7 +647,7 @@ class DefaultController extends Controller
         return $this->render('@App/admin/default/cart.html.twig',[
             'categories' => $categories,
             'cookProduct' => $cookProduct,
-            'count' => $count,
+            'count' => count($cookProduct),
             'price' => $price
         ]);
     }
@@ -1191,7 +741,7 @@ class DefaultController extends Controller
     /**
      * @Route("/admin/addproduct", name="admin_product_add")
      */
-    public function addProductAdminAction(Request $request)
+    public function addProductAdminAction()
     {
         $categories = $this->getDoctrine()->getRepository('AppBundle:Category')->findAll();
 
